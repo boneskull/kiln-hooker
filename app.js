@@ -37,7 +37,7 @@ if ('development' === app.get('env')) {
 log = new winston.Logger({transports: [new winston.transports.Console(transportOptions)]});
 
 
-app.get('/', function (req, res) {
+app.post('/', function (req, res) {
     log.info(inspect(req.body));
     res.status(200);
 });
