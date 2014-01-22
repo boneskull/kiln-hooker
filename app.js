@@ -38,8 +38,8 @@ log = new winston.Logger({transports: [new winston.transports.Console(transportO
 
 
 app.post('/', function (req, res) {
-    log.info(inspect(req.body));
-    res.status(200);
+    log.info(inspect(req.headers));
+    return res.status(200);
 });
 
 http.createServer(app).listen(app.get('port'), function () {
