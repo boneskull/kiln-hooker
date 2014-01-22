@@ -69,8 +69,7 @@ app.post('/', function (req, res) {
                 });
                 if (repo) {
                     childProcess.exec(repo.cmd, {
-                        cwd: repo.cwd,
-                        timeout: 3000
+                        cwd: repo.cwd
                     }, function (err, stdout, stderr) {
                         if (err) {
                             log.error(err);
