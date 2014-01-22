@@ -57,6 +57,7 @@ app.post('/', function (req, res) {
         return res.status(404);
     }
     try {
+        log.info(req.body);
         var data = JSON.parse(req.body),
             repository = data.repository,
             url,
