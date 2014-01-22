@@ -28,7 +28,7 @@ app = express();
 app.set('port', process.env.PORT || 3117);
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -58,7 +58,7 @@ app.post('/', function (req, res) {
     }
     try {
         log.info(req.body);
-        var data = JSON.parse(req.body),
+        var data = JSON.parse(req.param('payload')),
             repository = data.repository,
             url,
             repo;
