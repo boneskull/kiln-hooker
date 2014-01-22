@@ -56,47 +56,41 @@ app.post('/', function (req, res) {
         log.error('unknown remote');
         return res.status(404);
     }
-    try {
-        log.info(req.body);
-        var data = JSON.parse(req.param('payload')),
-            repository = data.repository,
-            url,
-            repo;
-        if (repository) {
-            url = repository.url;
-            if (url) {
-                repo = _.find(repos, function (repo) {
-                    return repo.url === url;
+    log.info(req.body);
+    var data = JSON.parse(req.param('payload')),
+        repository = data.repository,
+        url,
+        repo;
+    if (repository) {
+        url = repository.url;
+        if (url) {
+            repo = _.find(repos, function (repo) {
+                return repo.url === url;
+            });
+            if (repo) {
+                childProcess.exec(repo.cmd, {
+                    cwd: repo.cwd
+                }, function (err, stdout, stderr) {
+                    if (err) {
+                        log.error(err);
+                    }
+                    if (stdout) {
+                        log.info(stdout);
+                    }
+                    if (stderr) {
+                        log.warn(stderr);
+                    }
+                    return res.status(200);
                 });
-                if (repo) {
-                    childProcess.exec(repo.cmd, {
-                        cwd: repo.cwd
-                    }, function (err, stdout, stderr) {
-                        if (err) {
-                            log.error(err);
-                        }
-                        if (stdout) {
-                            log.info(stdout);
-                        }
-                        if (stderr) {
-                            log.warn(stderr);
-                        }
-                        return res.status(200);
-                    });
-                }
-                else {
-                    return res.status(403);
-                }
             }
-
+            else {
+                return res.status(403);
+            }
         }
+
+    } else {
+        return res.status(404);
     }
-    catch (e) {
-        log.error(e);
-        return res.status(500);
-    }
-    log.error('unknown data: ', req.body);
-    return res.status(404);
 
 });
 
