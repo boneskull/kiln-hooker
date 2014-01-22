@@ -38,7 +38,7 @@ log = new winston.Logger({transports: [new winston.transports.Console(transportO
 
 
 app.get('/', function (req, res) {
-    log.info(inspect(req));
+    log.info(inspect(req.body));
     res.status(200);
 });
 
