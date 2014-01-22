@@ -6,11 +6,20 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     inspect = require('util').inspect,
+    _ = require('lodash'),
+    childProcess = require('child_process'),
+    repos = require('./repos.conf.json'),
     app,
     log,
-    transportOptions = {
+    LOGFILE = 'hooker.log',
+    consoleTransportOptions = {
         colorize: true,
         timestamp: true
+    },
+    fileTransportOptions = {
+        filename: LOGFILE,
+        timestamp: true,
+        colorize: false
     };
 
 app = express();
@@ -25,7 +34,8 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(expressWinston.errorLogger({
     transports: [
-        new winston.transports.Console(transportOptions)
+        new winston.transports.Console(consoleTransportOptions),
+        new winston.transports.File(fileTransportOptions)
     ]
 }));
 
@@ -34,12 +44,57 @@ if ('development' === app.get('env')) {
     app.use(express.errorHandler());
 }
 
-log = new winston.Logger({transports: [new winston.transports.Console(transportOptions)]});
-
+log = new winston.Logger({
+    transports: [
+        new winston.transports.Console(consoleTransportOptions),
+        new winston.transports.File(fileTransportOptions)
+    ]
+});
 
 app.post('/', function (req, res) {
-    log.info(inspect(req.headers));
-    return res.status(200);
+    if (typeof req.headers['x-newrelic-id'] === 'undefined') {
+        log.error('unknown remote');
+        return res.status(404);
+    }
+    try {
+        var data = JSON.parse(req.body),
+            repository = data.repository,
+            url,
+            repo;
+        if (repository) {
+            url = repository.url;
+            if (url) {
+                repo = repos.filter(function (repo) {
+                    return repo.remote === url;
+                });
+                if (repo) {
+                    childProcess.exec(repo.cmd, {
+                        cwd: repo.cwd,
+                        timeout: 3000
+                    }, function (err, stdout, stderr) {
+                        if (err) {
+                            log.error(err);
+                        }
+                        if (stdout) {
+                            log.info(stdout);
+                        }
+                        if (stderr) {
+                            log.warn(stderr);
+                        }
+                        return res.status(200);
+                    });
+                }
+            }
+
+        }
+    }
+    catch (e) {
+        log.error(e);
+        return res.status(500);
+    }
+    log.error('unknown data: %s', req.body);
+    return res.status(404);
+
 });
 
 http.createServer(app).listen(app.get('port'), function () {
