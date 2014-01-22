@@ -56,7 +56,6 @@ app.post('/', function (req, res) {
         log.error('unknown remote');
         return res.status(404);
     }
-    log.info(req.body);
     var data = JSON.parse(req.param('payload')),
         repository = data.repository,
         url,
