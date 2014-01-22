@@ -58,7 +58,7 @@ app.post('/', function (req, res) {
     }
     try {
         log.info(req.body);
-        var data = JSON.parse(req.body),
+        var data = JSON.parse(req.body.payload),
             repository = data.repository,
             url,
             repo;
