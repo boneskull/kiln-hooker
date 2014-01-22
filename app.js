@@ -65,10 +65,8 @@ app.post('/', function (req, res) {
         if (repository) {
             url = repository.url;
             if (url) {
-                log.info(url);
-                log.info(repos);
                 repo = _.find(repos, function (repo) {
-                    return repo.remote === url;
+                    return repo.url === url;
                 });
                 if (repo) {
                     childProcess.exec(repo.cmd, {
@@ -85,6 +83,9 @@ app.post('/', function (req, res) {
                         }
                         return res.status(200);
                     });
+                }
+                else {
+                    return res.status(403);
                 }
             }
 
