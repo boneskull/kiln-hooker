@@ -5,6 +5,7 @@ var express = require('express'),
     winston = require('winston'),
     http = require('http'),
     path = require('path'),
+    inspect = require('util').inspect,
     app,
     log,
     transportOptions = {
@@ -37,7 +38,7 @@ log = new winston.Logger({transports: [new winston.transports.Console(transportO
 
 
 app.get('/', function (req, res) {
-    log.info(req);
+    log.info(inspect(req));
     res.status(200);
 });
 
