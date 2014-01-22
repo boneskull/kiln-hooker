@@ -65,7 +65,9 @@ app.post('/', function (req, res) {
         if (repository) {
             url = repository.url;
             if (url) {
-                repo = repos.filter(function (repo) {
+                log.info(url);
+                log.info(repos);
+                repo = _.find(repos, function (repo) {
                     return repo.remote === url;
                 });
                 if (repo) {
