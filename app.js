@@ -28,7 +28,7 @@ app = express();
 app.set('port', process.env.PORT || 3117);
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.json());
+app.use(express.bodyParser());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -58,7 +58,7 @@ app.post('/', function (req, res) {
     }
     try {
         log.info(req.body);
-        var data = JSON.parse(req.body.payload),
+        var data = JSON.parse(req.body),
             repository = data.repository,
             url,
             repo;
@@ -92,7 +92,7 @@ app.post('/', function (req, res) {
         log.error(e);
         return res.status(500);
     }
-    log.error('unknown data: %s', req.body);
+    log.error('unknown data: ', req.body);
     return res.status(404);
 
 });
