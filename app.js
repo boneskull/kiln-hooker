@@ -44,6 +44,4 @@ app.post('/', function (req, res) {
 
 http.createServer(app).listen(app.get('port'), function () {
     log.info('Express server listening on port ' + app.get('port'));
-
-
 });
