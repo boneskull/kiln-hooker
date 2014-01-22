@@ -1,0 +1,14 @@
+{
+  "name": "kiln-hooker",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.4.8",
+    "ejs": "*",
+    "express-winston": "~0.2.1",
+    "winston": "~0.7.2"
+  }
+}
