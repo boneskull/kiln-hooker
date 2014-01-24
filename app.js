@@ -3,20 +3,16 @@
 var express = require('express'),
     expressWinston = require('express-winston'),
     winston = require('winston'),
-    https = require('https'),
+    http = require('http'),
     path = require('path'),
     inspect = require('util').inspect,
     _ = require('lodash'),
     childProcess = require('child_process'),
     repos = require('./repos.conf.json'),
-    fs = require('fs'),
     LOGFILE = 'hooker.log',
 
     app,
     log,
-
-    hskey = fs.readFileSync(process.env.KILN_HOOKER_KEY),
-    hscert = fs.readFileSync(process.env.KILN_HOOKER_CERT),
 
     consoleTransportOptions = {
         colorize: true,
@@ -99,9 +95,6 @@ app.post('/', function (req, res) {
 
 });
 
-https.createServer({
-    key: hskey,
-    cert: hscert
-}, app).listen(app.get('port'), function () {
+http.createServer().listen(app.get('port'), function () {
     log.info('Express server listening on port ' + app.get('port'));
 });
