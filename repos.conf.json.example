@@ -1,0 +1,7 @@
+[
+    {
+        "url": "https://some-repo-to-expect-kiln-webhooks-from",
+        "cwd": "/some/directory/to/run/a/command/in",
+        "cmd": "some-command"
+    }
+]
